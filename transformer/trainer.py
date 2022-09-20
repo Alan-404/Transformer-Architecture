@@ -2,7 +2,7 @@ from transformer.behaviors.mask import generate_mask
 import tensorflow as tf
 from keras.metrics import Mean
 from keras.losses import SparseCategoricalCrossentropy
-
+from transformer.model import TransformerModel
 
 class Trainer:
     def __init__(self, model, optimizer, epochs, checkpoint_folder):
@@ -42,7 +42,8 @@ class Trainer:
         targ_output = targ[:, -1]
 
         encoder_padding_mask, decoder_look_ahead_mask, decoder_padding_mask = generate_mask(inp, targ_input)
-
+        print(inp.shape)
+        print(encoder_padding_mask.shape)
         with tf.GradientTape() as tape:
             preds = self.model(inp, targ_input, True, encoder_padding_mask, decoder_look_ahead_mask, decoder_padding_mask)
             d_loss = self.loss_function(targ_output, preds)

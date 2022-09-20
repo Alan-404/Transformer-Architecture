@@ -4,7 +4,7 @@ from transformer.layers.decoder_layer import DecoderLayer
 from transformer.behaviors.positional_encoding import encode_position
 
 class Decoder(Layer):
-    def __init__(self, h, d_ff, d_model, vocab_size, activation, n =6,  dropout_rate=0.1, eps=0.1):
+    def __init__(self,n, h, d_ff, d_model, vocab_size, activation,  dropout_rate=0.1, eps=0.1):
         super(Decoder, self).__init__()
         self.n = n
         self.d_model = d_model
@@ -28,7 +28,7 @@ class Decoder(Layer):
             decoder_output, self_attention_weights, global_attention_weights = decoder_layer(decoder_output, encoder_out, is_train, look_ahead_mask, padding_mask)
             attention_weights[f"decoder_layer_{index}_self_attention_weights"] = self_attention_weights
             attention_weights[f"decoder_layer_{index}_global_attention_weights"] = global_attention_weights
-
+        print("OK")
         return decoder_output, attention_weights
 
 

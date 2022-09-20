@@ -68,16 +68,14 @@ class Data:
 
     print('----------------End--------------------')
 
-  def load_dataset(self, inp_path, targ_path, max_length, num_examples):
+  def load_dataset(self, inp_path, targ_path, max_length):
     # TODO: Update document
-    inp_lines = io.open(inp_path, encoding="UTF-8").read().strip().split('\n')[:num_examples]
-    targ_lines = io.open(targ_path, encoding="UTF-8").read().strip().split('\n')[:num_examples]
+    inp_lines = io.open(inp_path, encoding="UTF-8").read().strip().split('\n')[:10000]
+    targ_lines = io.open(targ_path, encoding="UTF-8").read().strip().split('\n')[:10000]
     
     inp_lines = [self.preprocess_sentence(inp, max_length) for inp in inp_lines]
     targ_lines = [self.preprocess_sentence(targ, max_length) for targ in targ_lines]
 
-    # Display 10 pairs
-    self.display_samples(3, inp_lines, targ_lines)
     
     # Tokenizing
     self.inp_tokenizer = self.build_tokenizer(self.inp_tokenizer, inp_lines)
@@ -106,10 +104,10 @@ class Data:
 
     return inp_tensor, targ_tensor
 
-  def build_dataset(self, inp_path, targ_path, buffer_size, batch_size, max_length, num_examples):
+  def build_dataset(self, inp_path, targ_path, buffer_size, batch_size, max_length):
     # TODO: Update document
 
-    inp_tensor, targ_tensor = self.load_dataset(inp_path, targ_path, max_length, num_examples)
+    inp_tensor, targ_tensor = self.load_dataset(inp_path, targ_path, max_length)
 
     inp_tensor_train, inp_tensor_val, targ_tensor_train, targ_tensor_val = train_test_split(inp_tensor, targ_tensor, test_size=0.2)
 

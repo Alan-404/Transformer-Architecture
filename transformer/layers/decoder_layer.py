@@ -10,9 +10,9 @@ class DecoderLayer(Layer):
         self.multi_head_attention = MultiHeadAttention(d_model, h)
         self.ffn = ffn(d_ff, d_model, activation)
 
-        self.norm_layer_1 = LayerNormalization(eps)
-        self.norm_layer_2 = LayerNormalization(eps)
-        self.norm_layer_3 = LayerNormalization(eps)
+        self.norm_layer_1 = LayerNormalization(epsilon=eps)
+        self.norm_layer_2 = LayerNormalization(epsilon=eps)
+        self.norm_layer_3 = LayerNormalization(epsilon=eps)
 
         self.dropout_layer_1 = Dropout(dropout_rate)
         self.dropout_layer_2 = Dropout(dropout_rate)
@@ -20,9 +20,8 @@ class DecoderLayer(Layer):
 
     def call(self, tensor, encoder_out, is_train,  look_ahead_mask=None, padding_mask=None):
         masked_multi_head_attention_output, self_attention_output = self.masked_multi_head_attention(tensor, tensor, tensor, look_ahead_mask)
-
         tensor = self.norm_layer_1(tensor + self.dropout_layer_1(masked_multi_head_attention_output, training=is_train))
-
+        
         k = v = encoder_out
 
         multi_head_attention_out, global_attention_output = self.multi_head_attention(tensor, k, v, padding_mask)
