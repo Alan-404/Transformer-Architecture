@@ -1,0 +1,2 @@
+BOS = '<start>'
+EOS = '<end>'
