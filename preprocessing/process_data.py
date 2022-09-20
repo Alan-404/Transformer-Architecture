@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 import pickle
 
-class NMTDataset:
+class Data:
   def __init__(self, inp_lang, targ_lang, vocab_folder):
     self.inp_lang = inp_lang
     self.targ_lang = targ_lang
