@@ -40,7 +40,7 @@ class Data:
     return w
 
   def build_tokenizer(self, lang_tokenizer, lang):
-    # TODO: Update document
+
     if not lang_tokenizer:
       lang_tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='')
 
@@ -53,19 +53,6 @@ class Data:
     tensor = tf.keras.preprocessing.sequence.pad_sequences(tensor, padding='post', maxlen=max_length)
     return tensor
 
-
-  def display_samples(self, num_of_pairs, inp_lines, targ_lines):
-
-    pairs = zip(inp_lines[:num_of_pairs], targ_lines[:num_of_pairs])
-    print('=============Sample Data================')
-    print('----------------Begin--------------------')
-    for i, pair in enumerate(pairs):
-      inp, targ = pair
-      print('--> Sample {}:'.format(i + 1))
-      print('Input: ', inp)
-      print('Target: ', targ)
-
-    print('----------------End--------------------')
 
   def load_dataset(self, inp_path, targ_path, max_length):
 
@@ -104,7 +91,6 @@ class Data:
     return inp_tensor, targ_tensor
 
   def build_dataset(self, inp_path, targ_path, buffer_size, batch_size, max_length):
-    # TODO: Update document
 
     inp_tensor, targ_tensor = self.load_dataset(inp_path, targ_path, max_length)
 

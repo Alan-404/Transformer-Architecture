@@ -23,9 +23,7 @@ inp_vocab_size = len(inp_tokenizer.word_counts) + 1
 targ_vocab_size = len(targ_tokenizer.word_counts) + 1
 # %%
 model = TransformerModel(input_vocab_size=inp_vocab_size, target_vocab_size=targ_vocab_size)
-# %%
-from keras.optimizers import Adam
-from transformer.optimizer import CustomLearningRate
+
 # %%
 trainer = Trainer(model,epochs=10, checkpoint_folder='./check')
 # %%
@@ -37,6 +35,8 @@ except Exception as e:
 # %%
 # %%
 model.summary()
+# %%
+model.save_weights('./saved_models/first.h5')
 # %%
 
 # %%

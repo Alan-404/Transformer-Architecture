@@ -32,7 +32,7 @@ class Trainer:
         
         cross_entropy = SparseCategoricalCrossentropy(from_logits=True, reduction='none')
         
-        mask = tf.math.logical_not(real == 0)
+        mask = tf.math.logical_not(tf.math.equal(real, 0))
 
         loss = cross_entropy(real, pred)
         
@@ -49,6 +49,7 @@ class Trainer:
 
         with tf.GradientTape() as tape:
             preds = self.model(inp, targ, True, encoder_padding_mask, decoder_look_ahead_mask, decoder_padding_mask)
+
             d_loss = self.loss_function(targ, preds)
 
         grads = tape.gradient(d_loss, self.model.trainable_variables)

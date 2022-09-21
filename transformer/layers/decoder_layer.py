@@ -20,6 +20,7 @@ class DecoderLayer(Layer):
 
     def call(self, tensor, encoder_out, is_train,  look_ahead_mask=None, padding_mask=None):
         masked_multi_head_attention_output, self_attention_output = self.masked_multi_head_attention(tensor, tensor, tensor, look_ahead_mask)
+        
         tensor = self.norm_layer_1(tensor + self.dropout_layer_1(masked_multi_head_attention_output, training=is_train))
 
         k = v = encoder_out
