@@ -22,6 +22,5 @@ class TransformerModel(Model):
     def call(self, encoder_in, decoder_in, is_train, encoder_padding_mask, decoder_look_ahead_mask, decoder_padding_mask):
         encoder_output = self.encoder(encoder_in, is_train, encoder_padding_mask)
 
-        decoder_output, _ = self.decoder(decoder_in, encoder_output, decoder_look_ahead_mask, decoder_padding_mask)
-        print("OK")
+        decoder_output, _ = self.decoder(decoder_in, encoder_output, is_train, decoder_look_ahead_mask, decoder_padding_mask)
         return self.ffn(decoder_output)

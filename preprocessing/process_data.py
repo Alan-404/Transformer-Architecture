@@ -48,15 +48,14 @@ class Data:
     return lang_tokenizer
 
   def tokenize(self, lang_tokenizer, lang, max_length):
-    # TODO: Update document
-    # Padding
+
     tensor = lang_tokenizer.texts_to_sequences(lang)
     tensor = tf.keras.preprocessing.sequence.pad_sequences(tensor, padding='post', maxlen=max_length)
     return tensor
 
 
   def display_samples(self, num_of_pairs, inp_lines, targ_lines):
-    # TODO: Update document
+
     pairs = zip(inp_lines[:num_of_pairs], targ_lines[:num_of_pairs])
     print('=============Sample Data================')
     print('----------------Begin--------------------')
@@ -69,7 +68,7 @@ class Data:
     print('----------------End--------------------')
 
   def load_dataset(self, inp_path, targ_path, max_length):
-    # TODO: Update document
+
     inp_lines = io.open(inp_path, encoding="UTF-8").read().strip().split('\n')[:10000]
     targ_lines = io.open(targ_path, encoding="UTF-8").read().strip().split('\n')[:10000]
     

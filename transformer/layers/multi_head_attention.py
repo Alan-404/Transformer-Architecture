@@ -27,7 +27,7 @@ class MultiHeadAttention(Layer):
 
         attention_scores = tf.matmul(q, k, transpose_b=True)/tf.math.sqrt(dk)
 
-        if mask:
+        if mask is not None:
             attention_scores += (mask*(-1e30))
 
         attention_weights = tf.nn.softmax(attention_scores, axis=-1)
@@ -48,7 +48,7 @@ class MultiHeadAttention(Layer):
 
         tensor = tf.reshape(tensor, (batch_size, length, self.h, heading_value)) #
 
-        tensor_head = tf.transpose(tensor, [0,2,1,3]) # dim = (batch_size, self.h, length, heading_value)
+        tensor_head = tf.transpose(tensor, [0,2,1,3]) # (batch_size, self.h, length, heading_value)
 
         return tensor_head
 

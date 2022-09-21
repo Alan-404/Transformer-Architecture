@@ -2,17 +2,21 @@ from transformer.behaviors.mask import generate_mask
 import tensorflow as tf
 from keras.metrics import Mean
 from keras.losses import SparseCategoricalCrossentropy
-from transformer.model import TransformerModel
+from transformer.optimizer import CustomLearningRate
+from keras.optimizers import Adam
 
 class Trainer:
-    def __init__(self, model, optimizer, epochs, checkpoint_folder):
+    def __init__(self, model, checkpoint_folder, epochs=10):
         self.model = model
-        self.optimizer = optimizer
+        
         self.epochs = epochs
         self.train_loss = Mean(name='train_loss')
         self.train_accuracy = Mean(name='train_accuracy')
+        self.lrate = CustomLearningRate(d_model=512)
+        self.optimizer = Adam(learning_rate=self.lrate)
         self.checkpoint = tf.train.Checkpoint(model = self.model, optimizer = self.optimizer)
         self.checkpoint_manager = tf.train.CheckpointManager(self.checkpoint, checkpoint_folder, max_to_keep=3)
+        
 
     def cal_acc(self, real, pred):
         accuracies = tf.equal(real, tf.argmax(pred, axis=2))
@@ -22,38 +26,37 @@ class Trainer:
         accuracies = tf.cast(accuracies, dtype=tf.float32)
         mask = tf.cast(mask, dtype=tf.float32)
 
-        return tf.reduce_sum(accuracies) / tf.reduce_sum(mask)
+        return tf.math.reduce_sum(accuracies) / tf.math.reduce_sum(mask)
 
     def loss_function(self, real, pred):
+        
         cross_entropy = SparseCategoricalCrossentropy(from_logits=True, reduction='none')
-
+        
         mask = tf.math.logical_not(real == 0)
 
         loss = cross_entropy(real, pred)
-
-        mask = tf.cast(mask, dtype=tf.float32)
-
+        
+        mask = tf.cast(mask, dtype=loss.dtype)
+        
         loss = loss*mask
-        return tf.reduce_sum(loss) / tf.reduce_sum(mask)
+        
+        return tf.math.reduce_sum(loss) / tf.math.reduce_sum(mask)
 
 
     def train_step(self, inp, targ):
-        targ_input = targ[:, :-1]
-        targ_output = targ[:, -1]
+        
+        encoder_padding_mask, decoder_look_ahead_mask, decoder_padding_mask = generate_mask(inp, targ)
 
-        encoder_padding_mask, decoder_look_ahead_mask, decoder_padding_mask = generate_mask(inp, targ_input)
-        print(inp.shape)
-        print(encoder_padding_mask.shape)
         with tf.GradientTape() as tape:
-            preds = self.model(inp, targ_input, True, encoder_padding_mask, decoder_look_ahead_mask, decoder_padding_mask)
-            d_loss = self.loss_function(targ_output, preds)
+            preds = self.model(inp, targ, True, encoder_padding_mask, decoder_look_ahead_mask, decoder_padding_mask)
+            d_loss = self.loss_function(targ, preds)
 
         grads = tape.gradient(d_loss, self.model.trainable_variables)
 
         self.optimizer.apply_gradients(zip(grads, self.model.trainable_variables))
 
         self.train_loss.update_state(d_loss)
-        self.train_accuracy.update_state(self.cal_acc(targ_output, preds))
+        self.train_accuracy.update_state(self.cal_acc(targ, preds))
 
     
     def fit(self, data):

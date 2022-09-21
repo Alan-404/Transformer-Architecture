@@ -27,20 +27,17 @@ model = TransformerModel(input_vocab_size=inp_vocab_size, target_vocab_size=targ
 from keras.optimizers import Adam
 from transformer.optimizer import CustomLearningRate
 # %%
-lrate = CustomLearningRate(d_model=512)
-optimizer = Adam(learning_rate=lrate)
-# %%
-trainer = Trainer(model, optimizer=optimizer, epochs=10, checkpoint_folder='./check')
+trainer = Trainer(model,epochs=10, checkpoint_folder='./check')
 # %%
 try:
-    trainer.fit(train)
+    yolo = trainer.fit(train)
 except Exception as e:
-    print(str(e))
+    print('bug')
+    print(e)
 # %%
 # %%
-for (inp, targ) in train:
-    print(inp[0])
-
+model.summary()
+# %%
 
 # %%
 

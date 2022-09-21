@@ -28,7 +28,7 @@ class Decoder(Layer):
             decoder_output, self_attention_weights, global_attention_weights = decoder_layer(decoder_output, encoder_out, is_train, look_ahead_mask, padding_mask)
             attention_weights[f"decoder_layer_{index}_self_attention_weights"] = self_attention_weights
             attention_weights[f"decoder_layer_{index}_global_attention_weights"] = global_attention_weights
-        print("OK")
+
         return decoder_output, attention_weights
 
 
