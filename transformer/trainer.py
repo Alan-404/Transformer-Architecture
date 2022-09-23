@@ -17,6 +17,8 @@ class Transformer:
         self.checkpoint = tf.train.Checkpoint(model = self.model, optimizer = self.optimizer)
         self.checkpoint_manager = tf.train.CheckpointManager(self.checkpoint, checkpoint_folder, max_to_keep=3)
         
+    def summary(self):
+        self.model.summary()
 
     def cal_acc(self, real, pred):
         accuracies = tf.equal(real, tf.argmax(pred, axis=2))
@@ -32,7 +34,7 @@ class Transformer:
         
         cross_entropy = SparseCategoricalCrossentropy(from_logits=True, reduction='none')
         
-        mask = tf.math.logical_not(tf.math.equal(real, 0))
+        mask = tf.math.logical_not(real == 0)
 
         loss = cross_entropy(real, pred)
         
