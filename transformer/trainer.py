@@ -4,12 +4,12 @@ from keras.metrics import Mean
 from keras.losses import SparseCategoricalCrossentropy
 from transformer.optimizer import CustomLearningRate
 from keras.optimizers import Adam
+from transformer.model import TransformerModel
 
-class Trainer:
-    def __init__(self, model, checkpoint_folder, epochs=10):
-        self.model = model
+class Transformer:
+    def __init__(self, n=6, h=8, d_model=512, input_vocab_size=1000,target_vocab_size=10000, d_ff = 2048 , activation='relu', dropout_rate=0.1, eps=0.1 ,checkpoint_folder='./check'):
+        self.model = TransformerModel(n,h, input_vocab_size=input_vocab_size,target_vocab_size=target_vocab_size,d_model=d_model, d_ff=d_ff, activation=activation,dropout_rate=dropout_rate, eps=eps)
         
-        self.epochs = epochs
         self.train_loss = Mean(name='train_loss')
         self.train_accuracy = Mean(name='train_accuracy')
         self.lrate = CustomLearningRate(d_model=512)
@@ -60,11 +60,11 @@ class Trainer:
         self.train_accuracy.update_state(self.cal_acc(targ, preds))
 
     
-    def fit(self, data):
+    def fit(self, data, epochs = 10):
         if self.checkpoint_manager.latest_checkpoint:
             self.checkpoint.restore(self.checkpoint_manager.latest_checkpoint)
         
-        for epoch in range(self.epochs):
+        for epoch in range(epochs):
             self.train_loss.reset_states()
             self.train_accuracy.reset_states()
 

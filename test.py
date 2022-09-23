@@ -1,11 +1,11 @@
 #%%
 from preprocessing.process_data import Data
 from transformer.model import TransformerModel
-from transformer.trainer import Trainer
+from transformer.trainer import Transformer
 # %%
 data_processer = Data('en', 'vi', './check')
 # %%
-train, val = data_processer.build_dataset('./datasets/en_sents.txt', './datasets/vi_sents.txt', buffer_size=64, batch_size=64, max_length=40)
+train, val = data_processer.build_dataset('./datasets/en_sents.txt', './datasets/vi_sents.txt', buffer_size=64, batch_size=64, max_length=40, num_data=2000)
 # %%
 for batch, (inp, targ) in enumerate(train):
     print(inp.shape)
@@ -21,22 +21,15 @@ inp_tokenizer.word_counts
 # %%
 inp_vocab_size = len(inp_tokenizer.word_counts) + 1
 targ_vocab_size = len(targ_tokenizer.word_counts) + 1
-# %%
-model = TransformerModel(input_vocab_size=inp_vocab_size, target_vocab_size=targ_vocab_size)
 
 # %%
-trainer = Trainer(model,epochs=10, checkpoint_folder='./check')
+model = Transformer(input_vocab_size=inp_vocab_size, target_vocab_size=targ_vocab_size)
 # %%
-try:
-    yolo = trainer.fit(train)
-except Exception as e:
-    print('bug')
-    print(e)
+
+# %%
+my_model = model.fit(train, epochs=10)
 # %%
 # %%
-model.summary()
-# %%
-model.save_weights('./saved_models/first.h5')
 # %%
 
 # %%

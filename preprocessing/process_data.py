@@ -54,10 +54,10 @@ class Data:
     return tensor
 
 
-  def load_dataset(self, inp_path, targ_path, max_length):
+  def load_dataset(self, inp_path, targ_path, max_length, num_data = 10000):
 
-    inp_lines = io.open(inp_path, encoding="UTF-8").read().strip().split('\n')[:10000]
-    targ_lines = io.open(targ_path, encoding="UTF-8").read().strip().split('\n')[:10000]
+    inp_lines = io.open(inp_path, encoding="UTF-8").read().strip().split('\n')[:num_data]
+    targ_lines = io.open(targ_path, encoding="UTF-8").read().strip().split('\n')[:num_data]
     
     inp_lines = [self.preprocess_sentence(inp, max_length) for inp in inp_lines]
     targ_lines = [self.preprocess_sentence(targ, max_length) for targ in targ_lines]
@@ -90,9 +90,9 @@ class Data:
 
     return inp_tensor, targ_tensor
 
-  def build_dataset(self, inp_path, targ_path, buffer_size, batch_size, max_length):
+  def build_dataset(self, inp_path, targ_path, buffer_size, batch_size, max_length, num_data=10000):
 
-    inp_tensor, targ_tensor = self.load_dataset(inp_path, targ_path, max_length)
+    inp_tensor, targ_tensor = self.load_dataset(inp_path, targ_path, max_length, num_data)
 
     inp_tensor_train, inp_tensor_val, targ_tensor_train, targ_tensor_val = train_test_split(inp_tensor, targ_tensor, test_size=0.2)
 
